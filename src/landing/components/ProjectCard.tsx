@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { Text, RoundedBox } from '@react-three/drei'
 import { useSpring, animated, config } from '@react-spring/three'
 import { useExperienceStore } from '@/core/state/useExperienceStore'
@@ -19,13 +19,19 @@ const CARD_WIDTH = 2.5
 const CARD_HEIGHT = 1.6
 const CARD_DEPTH = 0.05
 
-// Color palette for focus area accents
+// ID12-13: Animation constants
+const BREATHING_SCALE_MIN = 1.0
+const BREATHING_SCALE_MAX = 1.015
+const BREATHING_SPEED = 1.5
+const MAX_TILT_DEGREES = 8 // Maximum tilt in degrees
+
+// Color palette for focus area accents (aurora theme)
 const FOCUS_COLORS: Record<string, string> = {
-  'xr-systems': '#7c3aed',    // Purple
-  'networking': '#06b6d4',    // Cyan
-  'performance': '#10b981',   // Emerald
-  'spatial-ui': '#ec4899',    // Pink
-  'experimental': '#f59e0b',  // Amber
+  'xr-systems': '#a855f7',    // Violet
+  'networking': '#22d3ee',    // Cyan
+  'performance': '#fb7185',   // Rose
+  'spatial-ui': '#a855f7',    // Violet
+  'experimental': '#22d3ee',  // Cyan
 }
 
 export function ProjectCard({
@@ -39,6 +45,13 @@ export function ProjectCard({
   const glowRef = useRef<Mesh>(null)
   const sparkleRefs = useRef<Mesh[]>([])
   const setSelectedProject = useExperienceStore((s) => s.setSelectedProject)
+
+  // ID13: Track tilt for magnetic effect
+  const targetTilt = useRef({ x: 0, y: 0 })
+  const currentTilt = useRef({ x: 0, y: 0 })
+
+  // ID12: Breathing animation state
+  const breathingScale = useRef(1.0)
 
   // Get accent color based on primary focus
   const accentColor = useMemo(() => {
@@ -54,8 +67,8 @@ export function ProjectCard({
     config: { ...config.wobbly, tension: 300, friction: 20 },
   })
 
-  // Animate sparkles and glow
-  useFrame((state) => {
+  // Animate sparkles, glow, breathing, and tilt
+  useFrame((state, delta) => {
     const t = state.clock.elapsedTime + index * 0.5
 
     // Pulsing glow border
@@ -76,6 +89,35 @@ export function ProjectCard({
         mat.opacity = 0.6 + Math.sin(t * 5 + i) * 0.3
       }
     })
+
+    // ID12: Card breathing animation (only when not hovered)
+    if (groupRef.current) {
+      if (!hovered) {
+        // Gentle breathing pulse
+        const breathPhase = Math.sin(t * BREATHING_SPEED) * 0.5 + 0.5
+        const targetBreathScale = BREATHING_SCALE_MIN + (BREATHING_SCALE_MAX - BREATHING_SCALE_MIN) * breathPhase
+        // Smooth interpolation
+        breathingScale.current += (targetBreathScale - breathingScale.current) * 0.1
+      } else {
+        // When hovered, let spring animation handle scale
+        breathingScale.current = 1.0
+      }
+
+      // ID13: Smooth tilt interpolation
+      const lerpFactor = hovered ? 8 * delta : 12 * delta
+      currentTilt.current.x += (targetTilt.current.x - currentTilt.current.x) * lerpFactor
+      currentTilt.current.y += (targetTilt.current.y - currentTilt.current.y) * lerpFactor
+
+      // Apply tilt rotation (convert degrees to radians)
+      if (hovered) {
+        groupRef.current.rotation.x = rotation[0] + currentTilt.current.x * (Math.PI / 180)
+        groupRef.current.rotation.y = rotation[1] + currentTilt.current.y * (Math.PI / 180)
+      } else {
+        // Smoothly return to base rotation when not hovered
+        groupRef.current.rotation.x = rotation[0] + currentTilt.current.x * (Math.PI / 180)
+        groupRef.current.rotation.y = rotation[1] + currentTilt.current.y * (Math.PI / 180)
+      }
+    }
   })
 
   const handleClick = () => {
@@ -90,18 +132,41 @@ export function ProjectCard({
   const handlePointerOut = () => {
     setHovered(false)
     document.body.style.cursor = 'auto'
+    // Reset tilt target when pointer leaves
+    targetTilt.current = { x: 0, y: 0 }
   }
+
+  // ID13: Magnetic tilt toward pointer
+  const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
+    if (!hovered || !e.uv) return
+
+    // UV coordinates are 0-1, map to -1 to 1
+    const offsetX = (e.uv.x - 0.5) * 2
+    const offsetY = (e.uv.y - 0.5) * 2
+
+    // Calculate tilt: tilt toward the pointer position
+    // Tilting on X axis (up/down) based on Y offset
+    // Tilting on Y axis (left/right) based on X offset
+    targetTilt.current = {
+      x: -offsetY * MAX_TILT_DEGREES, // Negative because looking down at card
+      y: offsetX * MAX_TILT_DEGREES,
+    }
+  }
+
+  // Combine hover scale with breathing scale
+  const combinedScale = scale.to((s: number) => s * breathingScale.current)
 
   return (
     <animated.group
       ref={groupRef}
       position={position}
       rotation={rotation}
-      scale={scale}
+      scale={combinedScale}
       position-z={cardZ}
       onClick={handleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
+      onPointerMove={handlePointerMove}
     >
       {/* Card background with glass-like material */}
       <RoundedBox
@@ -165,7 +230,7 @@ export function ProjectCard({
       <Text
         position={[0, -0.35, CARD_DEPTH / 2 + 0.01]}
         fontSize={0.14}
-        color="#ffffff"
+        color="#f0f0f5"
         anchorX="center"
         anchorY="middle"
         maxWidth={CARD_WIDTH - 0.4}
@@ -177,7 +242,7 @@ export function ProjectCard({
       <Text
         position={[0, -0.55, CARD_DEPTH / 2 + 0.01]}
         fontSize={0.09}
-        color="#8a8a9a"
+        color="#a0a0b0"
         anchorX="center"
         anchorY="middle"
         maxWidth={CARD_WIDTH - 0.4}

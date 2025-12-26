@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ScrollControls, Scroll, Preload } from '@react-three/drei'
 import { CameraRig } from './CameraRig'
@@ -8,13 +8,34 @@ import { CareerSection } from './sections/CareerSection'
 import { ContactSection } from './sections/ContactSection'
 import { AtmosphericLighting, MagicalFog } from './components/AtmosphericLighting'
 import { MagicalParticles } from './components/MagicalParticles'
-import { ProjectDetail } from './components/ProjectDetail'
 import { PlayfulOrbs } from './components/PlayfulOrb'
 import { useDeviceCapabilities } from '@/core/hooks/useDeviceCapabilities'
 
+// Lazy load physics to reduce initial bundle size (~850KB saved)
+const LazyPhysicsPlayground = lazy(() => import('./components/LazyPhysicsWrapper'))
+
 // Scene constants
-const SCROLL_PAGES = 4
+const SCROLL_PAGES = 3.5
 const SCROLL_DAMPING = 0.1
+
+// Deferred physics loading - loads after initial render
+function DeferredPhysics() {
+  const [shouldLoad, setShouldLoad] = useState(false)
+
+  useEffect(() => {
+    // Delay physics loading to prioritize initial render
+    const timer = setTimeout(() => setShouldLoad(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!shouldLoad) return null
+
+  return (
+    <Suspense fallback={null}>
+      <LazyPhysicsPlayground />
+    </Suspense>
+  )
+}
 
 function SceneContent() {
   return (
@@ -28,23 +49,23 @@ function SceneContent() {
       {/* Interactive playful orbs */}
       <PlayfulOrbs />
 
+      {/* Physics playground - lazy loaded after initial render */}
+      <DeferredPhysics />
+
       {/* Scrollable content container */}
       <Scroll>
         {/* Hero at Y=0 */}
         <HeroSection />
 
-        {/* Projects at Y=-10 */}
+        {/* Projects at Y=-6 */}
         <ProjectsSection />
 
-        {/* Career at Y=-25 */}
+        {/* Career at Y=-18 */}
         <CareerSection />
 
-        {/* Contact at Y=-32 */}
+        {/* Contact at Y=-28 */}
         <ContactSection />
       </Scroll>
-
-      {/* Project detail panel (renders in front of camera when project selected) */}
-      <ProjectDetail />
     </>
   )
 }

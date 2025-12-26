@@ -5,8 +5,8 @@ import { ProjectCard } from '../components/ProjectCard'
 import { projects } from '@/core/content'
 import type { Group } from 'three'
 
-// Projects section starts at Y=-10 in the scene
-const SECTION_Y = -10
+// Projects section starts at Y=-6 in the scene
+const SECTION_Y = -6
 
 // Generate staggered 3D layout for cards
 function getCardPosition(

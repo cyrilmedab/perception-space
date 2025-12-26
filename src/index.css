@@ -1,3 +1,23 @@
+@import 'tailwindcss';
+
+/* Aurora theme custom configuration */
+@theme {
+  /* Aurora background gradient colors */
+  --color-bg-start: #0f0a1e;
+  --color-bg-mid: #1a0a2e;
+  --color-bg-end: #0a1628;
+
+  /* Text colors */
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #a0a0b0;
+
+  /* Accent colors (aurora palette) */
+  --color-accent-violet: #a855f7;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-rose: #fb7185;
+}
+
+/* Base styles (preserved from original) */
 * {
   margin: 0;
   padding: 0;
@@ -23,4 +43,48 @@ body {
 
 canvas {
   display: block;
+}
+
+/* Aurora-themed utility classes */
+@layer components {
+  /* Aurora gradient backdrop for modals and overlays */
+  .aurora-backdrop {
+    background: linear-gradient(135deg, #0f0a1e 0%, #1a0a2e 50%, #0a1628 100%);
+    position: relative;
+  }
+
+  .aurora-backdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      rgba(168, 85, 247, 0.15) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+
+  /* Glass effect for cards and panels */
+  .aurora-glass {
+    background: rgba(26, 10, 46, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  /* Glow effects for accents */
+  .glow-violet {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3),
+      0 0 40px rgba(168, 85, 247, 0.1);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3),
+      0 0 40px rgba(34, 211, 238, 0.1);
+  }
+
+  .glow-rose {
+    box-shadow: 0 0 20px rgba(251, 113, 133, 0.3),
+      0 0 40px rgba(251, 113, 133, 0.1);
+  }
 }

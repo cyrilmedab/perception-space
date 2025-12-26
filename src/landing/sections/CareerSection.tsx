@@ -5,8 +5,8 @@ import { career } from '@/core/content'
 import type { Group } from 'three'
 import * as THREE from 'three'
 
-// Career section at Y=-25
-const SECTION_Y = -25
+// Career section at Y=-18
+const SECTION_Y = -18
 
 // Timeline configuration
 const CARD_WIDTH = 3.2
@@ -35,7 +35,7 @@ export function CareerSection() {
         <Text
           position={[0, 3, 0]}
           fontSize={0.4}
-          color="#ffffff"
+          color="#f0f0f5"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.05}
@@ -45,7 +45,7 @@ export function CareerSection() {
         <Text
           position={[0, 2.5, 0]}
           fontSize={0.12}
-          color="#6a6a7a"
+          color="#a0a0b0"
           anchorX="center"
           anchorY="middle"
         >
@@ -93,13 +93,13 @@ function TimelineLine() {
       {/* Main line */}
       <mesh ref={lineRef}>
         <boxGeometry args={[0.02, CARD_SPACING * career.length + 2, 0.02]} />
-        <meshBasicMaterial color="#4a9eff" transparent opacity={0.4} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.4} />
       </mesh>
 
       {/* Glow effect */}
       <mesh ref={glowRef}>
         <boxGeometry args={[0.08, CARD_SPACING * career.length + 2, 0.02]} />
-        <meshBasicMaterial color="#4a9eff" transparent opacity={0.15} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.15} />
       </mesh>
 
       {/* Timeline nodes */}
@@ -136,12 +136,12 @@ function TimelineNode({ position }: { position: [number, number, number] }) {
       {/* Core diamond */}
       <mesh ref={nodeRef}>
         <octahedronGeometry args={[0.08, 0]} />
-        <meshBasicMaterial color="#4a9eff" />
+        <meshBasicMaterial color="#22d3ee" />
       </mesh>
       {/* Pulsing ring */}
       <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.12, 0.15, 16]} />
-        <meshBasicMaterial color="#4a9eff" transparent opacity={0.3} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.3} />
       </mesh>
     </group>
   )
@@ -213,7 +213,7 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
         <mesh ref={glowRef} position={[0, 0, -0.01]}>
           <planeGeometry args={[CARD_WIDTH + 0.1, CARD_HEIGHT + 0.1]} />
           <meshBasicMaterial
-            color={index === 0 ? '#7c3aed' : index === 1 ? '#4a9eff' : '#06b6d4'}
+            color={index === 0 ? '#a855f7' : index === 1 ? '#22d3ee' : '#fb7185'}
             transparent
             opacity={0.15}
           />
@@ -223,7 +223,7 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
         <Text
           position={[0, 0.5, CARD_DEPTH / 2 + 0.01]}
           fontSize={0.14}
-          color="#ffffff"
+          color="#f0f0f5"
           anchorX="center"
           anchorY="middle"
           maxWidth={CARD_WIDTH - 0.4}
@@ -235,7 +235,7 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
         <Text
           position={[0, 0.2, CARD_DEPTH / 2 + 0.01]}
           fontSize={0.12}
-          color={index === 0 ? '#a78bfa' : index === 1 ? '#60a5fa' : '#22d3ee'}
+          color={index === 0 ? '#a855f7' : index === 1 ? '#22d3ee' : '#fb7185'}
           anchorX="center"
           anchorY="middle"
         >
@@ -246,7 +246,7 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
         <Text
           position={[0, -0.05, CARD_DEPTH / 2 + 0.01]}
           fontSize={0.08}
-          color="#6a6a7a"
+          color="#a0a0b0"
           anchorX="center"
           anchorY="middle"
         >
@@ -259,7 +259,7 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
             key={i}
             position={[-CARD_WIDTH / 2 + 0.25, -0.35 - i * 0.2, CARD_DEPTH / 2 + 0.01]}
             fontSize={0.07}
-            color="#8a8a9a"
+            color="#a0a0b0"
             anchorX="left"
             anchorY="middle"
             maxWidth={CARD_WIDTH - 0.5}
@@ -272,7 +272,7 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
         <mesh position={[CARD_WIDTH / 2 - 0.1, CARD_HEIGHT / 2 - 0.1, CARD_DEPTH / 2 + 0.01]}>
           <circleGeometry args={[0.04, 8]} />
           <meshBasicMaterial
-            color={index === 0 ? '#7c3aed' : index === 1 ? '#4a9eff' : '#06b6d4'}
+            color={index === 0 ? '#a855f7' : index === 1 ? '#22d3ee' : '#fb7185'}
             transparent
             opacity={0.6}
           />

@@ -5,8 +5,8 @@ import { meta } from '@/core/content'
 import type { Group, Mesh } from 'three'
 import * as THREE from 'three'
 
-// Contact section at Y=-32
-const SECTION_Y = -32
+// Contact section at Y=-28
+const SECTION_Y = -28
 
 /**
  * Contact Section
@@ -31,7 +31,7 @@ export function ContactSection() {
         <Text
           position={[0, 2, 0]}
           fontSize={0.4}
-          color="#ffffff"
+          color="#f0f0f5"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.05}
@@ -41,7 +41,7 @@ export function ContactSection() {
         <Text
           position={[0, 1.5, 0]}
           fontSize={0.12}
-          color="#6a6a7a"
+          color="#a0a0b0"
           anchorX="center"
           anchorY="middle"
         >
@@ -60,7 +60,7 @@ export function ContactSection() {
         <Text
           position={[0, -3.5, 0]}
           fontSize={0.08}
-          color="#4a4a5a"
+          color="#a0a0b0"
           anchorX="center"
           anchorY="middle"
         >
@@ -69,7 +69,7 @@ export function ContactSection() {
         <Text
           position={[0, -3.8, 0]}
           fontSize={0.06}
-          color="#3a3a4a"
+          color="#a0a0b0"
           anchorX="center"
           anchorY="middle"
         >
@@ -97,7 +97,7 @@ function EtherealGlow() {
   return (
     <mesh ref={glowRef} position={[0, 0, -8]}>
       <circleGeometry args={[6, 32]} />
-      <meshBasicMaterial color="#4a9eff" transparent opacity={0.05} />
+      <meshBasicMaterial color="#22d3ee" transparent opacity={0.05} />
     </mesh>
   )
 }
@@ -118,14 +118,14 @@ function ContactLinks() {
       label: 'GitHub',
       icon: '⚡',
       url: meta.links.github,
-      color: '#7c3aed',
+      color: '#a855f7',
       position: [0, -0.3, 0.5] as [number, number, number]
     },
     {
       label: 'Email',
       icon: '✉️',
       url: `mailto:${meta.email}`,
-      color: '#ec4899',
+      color: '#fb7185',
       position: [2, 0, 0] as [number, number, number]
     }
   ]
@@ -227,7 +227,7 @@ function ContactCard({ label, icon, url, color, position, index }: ContactCardPr
         <Text
           position={[0, -0.4, 0.03]}
           fontSize={0.12}
-          color={hovered ? color : '#8a8a9a'}
+          color={hovered ? color : '#a0a0b0'}
           anchorX="center"
           anchorY="middle"
         >
@@ -245,10 +245,10 @@ function FloatingOrbs() {
   const orbsRef = useRef<Group>(null)
 
   const orbs = useMemo(() => [
-    { position: [-4, 1, -3], color: '#4a9eff', size: 0.15 },
-    { position: [4, 0.5, -2], color: '#7c3aed', size: 0.12 },
-    { position: [-3, -2, -4], color: '#ec4899', size: 0.1 },
-    { position: [3.5, -1.5, -3], color: '#06b6d4', size: 0.08 },
+    { position: [-4, 1, -3], color: '#22d3ee', size: 0.15 },
+    { position: [4, 0.5, -2], color: '#a855f7', size: 0.12 },
+    { position: [-3, -2, -4], color: '#fb7185', size: 0.1 },
+    { position: [3.5, -1.5, -3], color: '#22d3ee', size: 0.08 },
     { position: [0, 2.5, -5], color: '#a855f7', size: 0.18 },
   ], [])
 

@@ -12,20 +12,20 @@ import * as THREE from 'three'
 
 // Light configuration for magical atmosphere
 const LIGHTS_CONFIG = {
-  // Main ambient - very soft base
-  ambient: { intensity: 0.25, color: '#1a1a2e' },
+  // Main ambient - brighter base
+  ambient: { intensity: 0.5, color: '#1a1a2e' },
 
   // Primary key light - warm white from above-right
   key: {
     position: [8, 15, 10] as [number, number, number],
-    intensity: 0.6,
+    intensity: 1.0,
     color: '#fff5f0'
   },
 
   // Fill light - soft blue from left
   fill: {
     position: [-10, 5, 8] as [number, number, number],
-    intensity: 0.3,
+    intensity: 0.5,
     color: '#4a7fff'
   },
 
@@ -131,8 +131,79 @@ export function MagicalFog() {
 
   return (
     <>
-      <fog ref={fogRef} attach="fog" args={[fogColor, 4, 35]} />
+      <fog ref={fogRef} attach="fog" args={[fogColor, 6, 40]} />
       <color attach="background" args={['#050508']} />
+      {/* Aurora gradient background */}
+      <AuroraGradient />
     </>
+  )
+}
+
+/**
+ * Aurora Gradient Mesh
+ * Slow-shifting violet/cyan/rose gradient in the background
+ */
+function AuroraGradient() {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const materialRef = useRef<THREE.ShaderMaterial>(null)
+
+  // Custom shader for smooth gradient animation
+  const shaderData = useMemo(() => ({
+    uniforms: {
+      uTime: { value: 0 },
+      uColor1: { value: new THREE.Color('#7c3aed') }, // Violet
+      uColor2: { value: new THREE.Color('#06b6d4') }, // Cyan
+      uColor3: { value: new THREE.Color('#ec4899') }, // Rose
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform vec3 uColor1;
+      uniform vec3 uColor2;
+      uniform vec3 uColor3;
+      varying vec2 vUv;
+
+      void main() {
+        // Slow-moving gradient based on time
+        float t1 = sin(uTime * 0.1 + vUv.x * 2.0) * 0.5 + 0.5;
+        float t2 = cos(uTime * 0.08 + vUv.y * 1.5) * 0.5 + 0.5;
+
+        // Mix colors based on position and time
+        vec3 color = mix(uColor1, uColor2, t1);
+        color = mix(color, uColor3, t2 * 0.5);
+
+        // Fade opacity towards edges for softer look
+        float opacity = 0.08 * (1.0 - abs(vUv.y - 0.5) * 1.5);
+        opacity *= (1.0 - abs(vUv.x - 0.5) * 1.2);
+
+        gl_FragColor = vec4(color, opacity);
+      }
+    `,
+  }), [])
+
+  useFrame((state) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = state.clock.elapsedTime
+    }
+  })
+
+  return (
+    <mesh ref={meshRef} position={[0, -14, -25]} rotation={[0, 0, 0]}>
+      <planeGeometry args={[60, 50, 1, 1]} />
+      <shaderMaterial
+        ref={materialRef}
+        attach="material"
+        args={[shaderData]}
+        transparent
+        depthWrite={false}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
   )
 }

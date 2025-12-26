@@ -5,7 +5,7 @@ import type { Group } from 'three'
 
 // Camera path constants from roadmap
 const CAMERA_START_Y = 0
-const CAMERA_END_Y = -32
+const CAMERA_END_Y = -28
 const CAMERA_Z = 8
 
 export function CameraRig() {

@@ -45,13 +45,13 @@ export function HeroSection() {
       {/* Background ethereal glow */}
       <mesh ref={glowRef} position={[0, 0, -3]}>
         <circleGeometry args={[4, 32]} />
-        <meshBasicMaterial color="#4a9eff" transparent opacity={0.04} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.04} />
       </mesh>
 
       {/* Secondary glow ring */}
       <mesh position={[0, 0, -4]} rotation={[0, 0, 0]}>
         <ringGeometry args={[3.5, 4.5, 64]} />
-        <meshBasicMaterial color="#7c3aed" transparent opacity={0.02} />
+        <meshBasicMaterial color="#a855f7" transparent opacity={0.02} />
       </mesh>
 
       {/* Floating container for gentle animation */}
@@ -62,7 +62,7 @@ export function HeroSection() {
           <Text
             position={[0, 0.5, -0.1]}
             fontSize={0.85}
-            color="#4a9eff"
+            color="#22d3ee"
             anchorX="center"
             anchorY="middle"
             letterSpacing={-0.02}
@@ -74,7 +74,7 @@ export function HeroSection() {
           <Text
             position={[0, 0.5, 0]}
             fontSize={0.8}
-            color="#ffffff"
+            color="#f0f0f5"
             anchorX="center"
             anchorY="middle"
             letterSpacing={-0.02}
@@ -87,7 +87,7 @@ export function HeroSection() {
         <Text
           position={[0, -0.3, 0]}
           fontSize={0.22}
-          color="#a78bfa"
+          color="#a855f7"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.04}
@@ -99,7 +99,7 @@ export function HeroSection() {
         <Text
           position={[0, -0.65, 0]}
           fontSize={0.12}
-          color="#5a5a6a"
+          color="#a0a0b0"
           anchorX="center"
           anchorY="middle"
         >
@@ -109,7 +109,7 @@ export function HeroSection() {
         {/* Decorative line */}
         <mesh position={[0, -0.9, 0]}>
           <planeGeometry args={[1.5, 0.003]} />
-          <meshBasicMaterial color="#4a9eff" transparent opacity={0.3} />
+          <meshBasicMaterial color="#22d3ee" transparent opacity={0.3} />
         </mesh>
 
         {/* Scroll indicator with animation */}
@@ -148,7 +148,7 @@ function ScrollIndicator() {
     <group ref={groupRef} position={[0, -1.4, 0]}>
       <Text
         fontSize={0.1}
-        color="#4a4a5a"
+        color="#a0a0b0"
         anchorX="center"
         anchorY="middle"
         letterSpacing={0.1}
@@ -158,12 +158,12 @@ function ScrollIndicator() {
       {/* Animated arrow */}
       <mesh ref={arrowRef} position={[0, -0.25, 0]} rotation={[Math.PI, 0, 0]}>
         <coneGeometry args={[0.04, 0.08, 3]} />
-        <meshBasicMaterial color="#4a9eff" transparent opacity={0.5} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.5} />
       </mesh>
       {/* Trail effect */}
       <mesh position={[0, -0.15, 0]}>
         <planeGeometry args={[0.02, 0.15]} />
-        <meshBasicMaterial color="#4a9eff" transparent opacity={0.2} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.2} />
       </mesh>
     </group>
   )
@@ -176,7 +176,7 @@ function EnhancedParticles() {
   const particlesRef = useRef<Group>(null)
 
   const particles = useMemo(() => {
-    const colors = ['#4a9eff', '#7c3aed', '#ec4899', '#06b6d4']
+    const colors = ['#22d3ee', '#a855f7', '#fb7185', '#22d3ee']
     return Array.from({ length: 30 }, () => ({
       position: [
         (Math.random() - 0.5) * 10,
@@ -254,7 +254,7 @@ function OrbitalRings() {
         >
           <ringGeometry args={[radius - 0.02, radius, 64]} />
           <meshBasicMaterial
-            color={i === 0 ? '#4a9eff' : i === 1 ? '#7c3aed' : '#ec4899'}
+            color={i === 0 ? '#22d3ee' : i === 1 ? '#a855f7' : '#fb7185'}
             transparent
             opacity={0.06}
             side={THREE.DoubleSide}
