@@ -5,8 +5,8 @@ import { meta } from '@/core/content'
 import type { Group, Mesh } from 'three'
 import * as THREE from 'three'
 
-// Contact section at Y=-28
-const SECTION_Y = -28
+// Contact section at Y=-34 (more space for Career timeline)
+const SECTION_Y = -34
 
 /**
  * Contact Section

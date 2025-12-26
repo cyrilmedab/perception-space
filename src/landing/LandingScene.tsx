@@ -15,7 +15,7 @@ import { useDeviceCapabilities } from '@/core/hooks/useDeviceCapabilities'
 const LazyPhysicsPlayground = lazy(() => import('./components/LazyPhysicsWrapper'))
 
 // Scene constants
-const SCROLL_PAGES = 3.5
+const SCROLL_PAGES = 4
 const SCROLL_DAMPING = 0.1
 
 // Deferred physics loading - loads after initial render

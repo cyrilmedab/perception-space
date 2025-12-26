@@ -4,16 +4,13 @@ import type { RapierRigidBody } from '@react-three/rapier'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// Aurora accent colors
+// Aurora accent colors (5 objects)
 const AURORA_COLORS = [
   '#a855f7', // Violet
   '#22d3ee', // Cyan
   '#fb7185', // Rose
-  '#a855f7', // Violet
   '#22d3ee', // Cyan
-  '#fb7185', // Rose
   '#a855f7', // Violet
-  '#22d3ee', // Cyan
 ]
 
 interface PhysicsObjectProps {
@@ -43,15 +40,15 @@ function PhysicsObject({ position, color, shape, size, index }: PhysicsObjectPro
     }
   })
 
-  // ID11: Click-to-flick interaction
+  // ID11: Click-to-flick interaction (gentler impulse to keep objects bounded)
   const handleClick = () => {
     if (rigidBodyRef.current) {
       isFlicking.current = true
 
-      // Random horizontal direction with strong upward force
-      const impulseX = (Math.random() - 0.5) * 3
-      const impulseY = 4 + Math.random() * 2 // Strong upward
-      const impulseZ = (Math.random() - 0.5) * 3
+      // Gentler impulse - random horizontal with moderate upward force
+      const impulseX = (Math.random() - 0.5) * 1.2
+      const impulseY = 1.5 + Math.random() * 0.8 // Moderate upward
+      const impulseZ = (Math.random() - 0.5) * 1.2
 
       // Apply impulse at center of mass
       rigidBodyRef.current.applyImpulse(
@@ -59,12 +56,12 @@ function PhysicsObject({ position, color, shape, size, index }: PhysicsObjectPro
         true
       )
 
-      // Add some torque for spin
+      // Add some torque for spin (gentler)
       rigidBodyRef.current.applyTorqueImpulse(
         {
-          x: (Math.random() - 0.5) * 0.5,
-          y: (Math.random() - 0.5) * 0.5,
-          z: (Math.random() - 0.5) * 0.5
+          x: (Math.random() - 0.5) * 0.2,
+          y: (Math.random() - 0.5) * 0.2,
+          z: (Math.random() - 0.5) * 0.2
         },
         true
       )
@@ -115,10 +112,10 @@ function PhysicsObject({ position, color, shape, size, index }: PhysicsObjectPro
       position={position}
       colliders={false}
       mass={0.5} // Light profile as specified
-      linearDamping={0.5}
-      angularDamping={0.5}
-      restitution={0.7} // Bounce
-      friction={0.3}
+      linearDamping={0.8} // Higher damping to slow objects faster
+      angularDamping={0.8}
+      restitution={0.4} // Reduced bounce to keep objects calmer
+      friction={0.5}
     >
       {renderCollider()}
       <mesh
@@ -142,87 +139,91 @@ function PhysicsObject({ position, color, shape, size, index }: PhysicsObjectPro
 }
 
 /**
- * Bowl-shaped container to keep objects bounded
+ * Enclosed container to keep objects absolutely bounded
+ * Smaller, tighter enclosure with walls on all sides and a ceiling
  */
 function PhysicsBowl() {
-  const bowlRadius = 2.5
-  const bowlThickness = 0.1
-
-  // Create segments for the bowl shape
-  const segments = useMemo(() => {
-    const segs = []
-    const segmentCount = 12
-
-    for (let i = 0; i < segmentCount; i++) {
-      const angle = (i / segmentCount) * Math.PI * 2
-
-      const x = Math.cos(angle) * bowlRadius
-      const z = Math.sin(angle) * bowlRadius
-      const rotationY = -angle + Math.PI / 2
-
-      segs.push({
-        position: [x, -0.3, z] as [number, number, number],
-        rotation: [0, rotationY, -0.4] as [number, number, number],
-        size: [0.8, bowlThickness, 1.5] as [number, number, number],
-      })
-    }
-
-    return segs
-  }, [bowlRadius])
+  const containerWidth = 1.8 // Smaller container
+  const containerDepth = 1.8
+  const containerHeight = 2.5 // Height of walls
+  const wallThickness = 0.1
 
   return (
     <group>
-      {/* Bowl floor */}
-      <RigidBody type="fixed" position={[0, -1, 0]}>
-        <CuboidCollider args={[3, 0.1, 3]} />
+      {/* Floor */}
+      <RigidBody type="fixed" position={[0, -0.5, 0]}>
+        <CuboidCollider args={[containerWidth / 2, wallThickness / 2, containerDepth / 2]} />
         <mesh receiveShadow>
-          <cylinderGeometry args={[bowlRadius, bowlRadius * 0.8, 0.2, 32]} />
+          <boxGeometry args={[containerWidth, wallThickness, containerDepth]} />
           <meshStandardMaterial
             color="#1a1a2e"
             metalness={0.2}
             roughness={0.8}
             transparent
-            opacity={0.3}
+            opacity={0.25}
           />
         </mesh>
       </RigidBody>
 
-      {/* Bowl walls */}
-      {segments.map((seg, i) => (
-        <RigidBody
-          key={i}
-          type="fixed"
-          position={seg.position}
-          rotation={seg.rotation}
-        >
-          <CuboidCollider args={[seg.size[0] / 2, seg.size[1] / 2, seg.size[2] / 2]} />
-        </RigidBody>
-      ))}
+      {/* Left wall (-X) */}
+      <RigidBody type="fixed" position={[-containerWidth / 2, containerHeight / 2 - 0.5, 0]}>
+        <CuboidCollider args={[wallThickness / 2, containerHeight / 2, containerDepth / 2]} />
+      </RigidBody>
+
+      {/* Right wall (+X) */}
+      <RigidBody type="fixed" position={[containerWidth / 2, containerHeight / 2 - 0.5, 0]}>
+        <CuboidCollider args={[wallThickness / 2, containerHeight / 2, containerDepth / 2]} />
+      </RigidBody>
+
+      {/* Back wall (-Z) */}
+      <RigidBody type="fixed" position={[0, containerHeight / 2 - 0.5, -containerDepth / 2]}>
+        <CuboidCollider args={[containerWidth / 2, containerHeight / 2, wallThickness / 2]} />
+      </RigidBody>
+
+      {/* Front wall (+Z) - invisible but present */}
+      <RigidBody type="fixed" position={[0, containerHeight / 2 - 0.5, containerDepth / 2]}>
+        <CuboidCollider args={[containerWidth / 2, containerHeight / 2, wallThickness / 2]} />
+      </RigidBody>
+
+      {/* Ceiling - prevents objects from escaping upward */}
+      <RigidBody type="fixed" position={[0, containerHeight - 0.5, 0]}>
+        <CuboidCollider args={[containerWidth / 2, wallThickness / 2, containerDepth / 2]} />
+      </RigidBody>
+
+      {/* Visual container outline (subtle) */}
+      <mesh position={[0, containerHeight / 2 - 0.5, 0]}>
+        <boxGeometry args={[containerWidth - 0.02, containerHeight - 0.02, containerDepth - 0.02]} />
+        <meshBasicMaterial
+          color="#22d3ee"
+          transparent
+          opacity={0.03}
+          wireframe
+        />
+      </mesh>
     </group>
   )
 }
 
 /**
  * PhysicsPlayground
- * Collection of interactive physics objects with a bowl container
- * Positioned in the hero area for playful interaction
+ * Collection of interactive physics objects with an enclosed container
+ * Positioned centered below the hero name (X=0, Y=-1.5)
  */
 export function PhysicsPlayground() {
-  // Define 8 physics objects with varied shapes and colors
+  // Define 5 physics objects with varied shapes and colors (reduced from 8)
+  // Positions are relative to container, starting above the floor
   const objects = useMemo(() => [
-    { position: [0.5, 1.5, 0] as [number, number, number], shape: 'cube' as const, size: 0.35 },
-    { position: [-0.5, 2, 0.3] as [number, number, number], shape: 'sphere' as const, size: 0.3 },
-    { position: [0, 1.8, -0.5] as [number, number, number], shape: 'tetrahedron' as const, size: 0.35 },
-    { position: [0.8, 2.2, -0.3] as [number, number, number], shape: 'cube' as const, size: 0.3 },
-    { position: [-0.8, 1.6, 0] as [number, number, number], shape: 'sphere' as const, size: 0.25 },
-    { position: [0.3, 2.5, 0.5] as [number, number, number], shape: 'tetrahedron' as const, size: 0.3 },
-    { position: [-0.3, 1.9, -0.4] as [number, number, number], shape: 'cube' as const, size: 0.28 },
-    { position: [0, 2.3, 0] as [number, number, number], shape: 'sphere' as const, size: 0.32 },
+    { position: [0.3, 0.5, 0.2] as [number, number, number], shape: 'cube' as const, size: 0.22 },
+    { position: [-0.3, 0.8, -0.2] as [number, number, number], shape: 'sphere' as const, size: 0.2 },
+    { position: [0, 1.1, 0] as [number, number, number], shape: 'tetrahedron' as const, size: 0.22 },
+    { position: [-0.4, 0.6, 0.3] as [number, number, number], shape: 'sphere' as const, size: 0.18 },
+    { position: [0.4, 0.9, -0.1] as [number, number, number], shape: 'cube' as const, size: 0.2 },
   ], [])
 
   return (
-    <group position={[4, 0.5, -2]}>
-      {/* Bowl container */}
+    // Centered below hero name: X=0, Y=-1.5 (below title at Y=-0.3, above scroll indicator)
+    <group position={[0, -1.5, 0]}>
+      {/* Enclosed container */}
       <PhysicsBowl />
 
       {/* Physics objects */}
@@ -238,12 +239,12 @@ export function PhysicsPlayground() {
       ))}
 
       {/* Subtle ambient glow beneath */}
-      <mesh position={[0, -0.9, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[2.5, 32]} />
+      <mesh position={[0, -0.45, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.2, 32]} />
         <meshBasicMaterial
           color="#a855f7"
           transparent
-          opacity={0.08}
+          opacity={0.06}
         />
       </mesh>
     </group>

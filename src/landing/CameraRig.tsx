@@ -3,9 +3,9 @@ import { useFrame } from '@react-three/fiber'
 import { useScroll } from '@react-three/drei'
 import type { Group } from 'three'
 
-// Camera path constants from roadmap
+// Camera path constants
 const CAMERA_START_Y = 0
-const CAMERA_END_Y = -28
+const CAMERA_END_Y = -34
 const CAMERA_Z = 8
 
 export function CameraRig() {
