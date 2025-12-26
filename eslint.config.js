@@ -35,6 +35,8 @@ export default tseslint.config(
     rules: {
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
+      // R3F uses many custom Three.js properties that ESLint doesn't recognize
+      "react/no-unknown-property": "off",
       "react-refresh/only-export-components": "warn",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",

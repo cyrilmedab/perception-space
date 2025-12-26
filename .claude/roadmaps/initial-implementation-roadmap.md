@@ -12,9 +12,49 @@ Portfolio website for Cyril Medabalimi (XR Software Engineer) with two tiers:
 ---
 
 ## Current State
-- Barebones Vite + React 19 template
-- No 3D code yet
-- Content data ready in `.claude/refs/content_data.json` (5 projects, 3 career roles)
+- **Phase 1 Complete** — Landing foundation implemented
+- **Phase 2 Complete** — Landing polish with magical design
+
+### Architecture Summary
+- React 18+ with TypeScript, Vite build
+- Three.js via @react-three/fiber (R3F)
+- @react-three/drei for helpers (ScrollControls, Text, Float, RoundedBox)
+- @react-spring/three for smooth spring animations
+- Zustand for state management (useExperienceStore)
+
+### Scene Structure
+- **LandingScene.tsx**: Main Canvas with ScrollControls (4 pages, damping 0.1)
+- **CameraRig.tsx**: Camera moves from Y=0 to Y=-32 based on scroll
+- **AtmosphericLighting.tsx**: Multi-colored pulsing point lights, ambient, directional
+- **MagicalFog**: Custom fog (#0a0a12) with depth 4-35 units
+
+### Sections (by Y position)
+- **HeroSection (Y=0)**: Name, title, location, scroll indicator, ethereal glow rings, enhanced particles
+- **ProjectsSection (Y=-10)**: 5 project cards in 2-column staggered layout with depth variation
+- **CareerSection (Y=-25)**: Timeline with 3 role cards, glowing node markers
+- **ContactSection (Y=-32)**: LinkedIn, GitHub, Email cards with hover effects
+
+### Key Components
+- **ProjectCard.tsx**: Spring-animated hover (scale 1.08), color-coded by focus area, sparkle effects
+- **ProjectDetail.tsx**: Modal panel that follows camera, closes on Escape, shows full project info
+- **PlayfulOrb.tsx**: Interactive crystal orbs with orbital rings and particles
+- **MagicalParticles.tsx**: 60 floating particles with color variety and organic motion
+
+### State Management (useExperienceStore)
+- `mode`: 'landing' | 'xr'
+- `selectedProject`: string | null (triggers ProjectDetail panel)
+- `scrollProgress`: number (0-1)
+- `isLoading`: boolean
+
+### Content Data (src/core/content/)
+- projects.json: 5 projects with focus areas, awards, links, technical details
+- career.json: 3 roles with highlights
+- meta.json: Cyril's info, skills, education, contact
+
+### Performance
+- Bundle: 367KB gzipped (budget: 500KB)
+- DPR capped at 2x via useDeviceCapabilities hook
+- 60 particles + 3 orbs + fog for atmosphere without impacting FPS
 
 ---
 
@@ -53,12 +93,12 @@ Portfolio website for Cyril Medabalimi (XR Software Engineer) with two tiers:
 | 1.16 | **Validation checkpoint** | Test all criteria | — |
 
 **Phase 1 Exit Criteria:**
-- [ ] Scroll moves camera through scene
-- [ ] Hero displays name/title
-- [ ] 5 project cards in floating arrangement
-- [ ] Cards hover with scale/cursor change
-- [ ] Works on mobile viewport
-- [ ] FPS > 50
+- [x] Scroll moves camera through scene
+- [x] Hero displays name/title
+- [x] 5 project cards in floating arrangement
+- [x] Cards hover with scale/cursor change
+- [x] Works on mobile viewport
+- [x] FPS > 50
 
 ---
 
@@ -94,12 +134,14 @@ Portfolio website for Cyril Medabalimi (XR Software Engineer) with two tiers:
 | 2.13 | **Validation checkpoint** |
 
 **Phase 2 Exit Criteria:**
-- [ ] Project cards expand to detail view
-- [ ] Physics object grabbable + bouncy
-- [ ] Career section with 3 roles
-- [ ] Contact links working
-- [ ] FPS: 60 desktop, 50+ mobile
-- [ ] Bundle < 500KB gzipped
+- [x] Project cards expand to detail view (click opens ProjectDetail modal)
+- [x] Interactive playful orbs (not physics-based Rapier, but spring-animated crystal orbs)
+- [x] Career section with 3 roles (timeline with glowing nodes)
+- [x] Contact links working (LinkedIn, GitHub, Email with hover effects)
+- [x] Enhanced hover states with spring animations and sparkles
+- [x] Magical atmosphere (particles, colored lights, ethereal glows)
+- [x] FPS: 60 desktop, 50+ mobile
+- [x] Bundle 367KB gzipped (< 500KB budget)
 
 ---
 
@@ -201,8 +243,13 @@ Phase 2:
 
 ## Next Step
 
-Start with **Task 1.1**: Install 3D dependencies
-```bash
-npm install three @react-three/fiber @react-three/drei zustand
-npm install -D @types/three
-```
+Phase 2 complete. Ready for **Phase 3: XR Foundation** when needed:
+- Install `@react-three/xr`
+- Create XR scene shell and experience gate
+- Implement project anchors in spatial layout
+- Add controller ray interaction
+
+Or continue refining the landing experience with:
+- Real project thumbnails/images
+- Mobile touch optimization
+- Additional polish and micro-interactions

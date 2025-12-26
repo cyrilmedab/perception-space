@@ -32,6 +32,17 @@ The landing experience is the priority. XR is an enhancement.
 
 ---
 
+## Dev Server Management
+
+**Do NOT start the dev server automatically.** Instead:
+
+1. When changes are complete and ready to test, prompt the user: "Ready to test! Please run `npm run dev` to start the dev server."
+2. When work is done and the user no longer needs the server, prompt: "You can stop the dev server now with Ctrl+C if you're done testing."
+
+This keeps the user in control of long-running processes.
+
+---
+
 ## Architecture Quick Reference
 
 ```

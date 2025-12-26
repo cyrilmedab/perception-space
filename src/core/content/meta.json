@@ -1,0 +1,33 @@
+{
+  "name": "Cyril Medabalimi",
+  "title": "Software Engineer (Unity / Platform / XR)",
+  "location": "San Francisco, CA",
+  "email": "cyrildmed@gmail.com",
+  "phone": "(908) 458-7846",
+  "links": {
+    "linkedin": "https://linkedin.com/in/cyrilmedab",
+    "github": "https://github.com/cyrilmedab",
+    "portfolio": "https://cyrilmedab.com"
+  },
+  "education": [
+    {
+      "credential": "XR Software Engineering Certificate (Honors)",
+      "institution": "XR Bootcamp",
+      "year": "2023"
+    },
+    {
+      "credential": "B.S. Bioengineering",
+      "institution": "Northeastern University",
+      "year": "2021"
+    }
+  ],
+  "skills": {
+    "languages": ["C#", "C++", "Python", "JavaScript/TypeScript", "Bash"],
+    "engineFrameworks": ["Unity 3D", "OpenXR", "XR Interaction Toolkit", "MRTK3", "AR Foundation"],
+    "networking": ["Photon Fusion", "Real-time state sync", "Authority & reconciliation"],
+    "xr3d": ["Spatial anchors", "Hand tracking", "Interaction systems", "LiDAR integration"],
+    "performance": ["Multithreading", "Unity Profiler", "GC optimization", "Frame budgeting"],
+    "platforms": ["Meta Quest 2/3/Pro", "Android (ARCore)", "iOS (ARKit)", "HoloLens 2", "Linux"],
+    "tools": ["Git", "GDB", "Linux", "Blender", "Shader Graph", "Figma"]
+  }
+}

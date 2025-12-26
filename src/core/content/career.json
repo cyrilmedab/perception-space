@@ -1,0 +1,37 @@
+[
+  {
+    "id": "wondr",
+    "title": "Lead XR Software Engineer",
+    "company": "Wondr Inc",
+    "location": "San Francisco, CA",
+    "period": { "start": "2025-01", "end": "2025-05" },
+    "highlights": [
+      "Architected location-based AR platform in Unity using ARCore",
+      "Designed modular, scalable systems for multi-developer iteration",
+      "Optimized rendering and memory for mobile hardware"
+    ]
+  },
+  {
+    "id": "forgefx",
+    "title": "XR Software Developer",
+    "company": "ForgeFX Simulations",
+    "location": "San Francisco, CA",
+    "period": { "start": "2024-03", "end": "2024-12" },
+    "highlights": [
+      "Developed enterprise XR applications with Unity, OpenXR, MRTK3",
+      "Integrated AI-driven interaction flows including voice systems",
+      "Profiled and optimized performance across platforms"
+    ]
+  },
+  {
+    "id": "moodme",
+    "title": "AR Software Intern",
+    "company": "MoodMe",
+    "location": "Austin, TX",
+    "period": { "start": "2023-11", "end": "2024-03" },
+    "highlights": [
+      "Built emotion-responsive AR features using facial and affective signals",
+      "Reduced latency via Unity profiling on constrained devices"
+    ]
+  }
+]
