@@ -14,9 +14,12 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
     "@react-three/rapier": "^2.2.0",
+    "@theatre/core": "^0.7.2",
+    "@theatre/r3f": "^0.7.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "^0.182.0",
+    "troika-three-text": "^0.52.4",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

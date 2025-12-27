@@ -1,7 +1,8 @@
 import { useRef, useState, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text, Float, RoundedBox, Html } from '@react-three/drei'
+import { Text, Float, Html } from '@react-three/drei'
 import { meta } from '@/core/content'
+import { LiquidGlassPanel } from '@/landing/components/LiquidGlassPanel'
 import type { Group, Mesh } from 'three'
 import * as THREE from 'three'
 
@@ -31,17 +32,17 @@ export function ContactSection() {
         <Text
           position={[0, 2, 0]}
           fontSize={0.4}
-          color="#f0f0f5"
+          color="#1a1a2e"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.05}
         >
-          Let's Connect
+          {"Let's Connect"}
         </Text>
         <Text
           position={[0, 1.5, 0]}
           fontSize={0.12}
-          color="#a0a0b0"
+          color="#4a4a5a"
           anchorX="center"
           anchorY="middle"
         >
@@ -60,16 +61,16 @@ export function ContactSection() {
         <Text
           position={[0, -3.5, 0]}
           fontSize={0.08}
-          color="#a0a0b0"
+          color="#4a4a5a"
           anchorX="center"
           anchorY="middle"
         >
-          {meta.name} • {new Date().getFullYear()}
+          {meta.name} | {new Date().getFullYear()}
         </Text>
         <Text
           position={[0, -3.8, 0]}
           fontSize={0.06}
-          color="#a0a0b0"
+          color="#5a5a6a"
           anchorX="center"
           anchorY="middle"
         >
@@ -158,7 +159,6 @@ interface ContactCardProps {
 function ContactCard({ label, icon, url, color, position, index }: ContactCardProps) {
   const [hovered, setHovered] = useState(false)
   const groupRef = useRef<Group>(null)
-  const glowRef = useRef<Mesh>(null)
   const ringRef = useRef<Mesh>(null)
 
   useFrame((state) => {
@@ -166,15 +166,10 @@ function ContactCard({ label, icon, url, color, position, index }: ContactCardPr
       const targetScale = hovered ? 1.1 : 1
       groupRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.15)
     }
-    if (glowRef.current) {
-      const material = glowRef.current.material as THREE.MeshBasicMaterial
-      const targetOpacity = hovered ? 0.5 : 0.2
-      material.opacity = THREE.MathUtils.lerp(material.opacity, targetOpacity, 0.1)
-    }
     if (ringRef.current) {
       ringRef.current.rotation.z = state.clock.elapsedTime * 0.5 + index
       const material = ringRef.current.material as THREE.MeshBasicMaterial
-      material.opacity = hovered ? 0.6 : 0.2
+      material.opacity = hovered ? 0.6 : 0.3
     }
   })
 
@@ -191,48 +186,43 @@ function ContactCard({ label, icon, url, color, position, index }: ContactCardPr
         onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
         onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto' }}
       >
-        {/* Card background */}
-        <RoundedBox args={[1.4, 1.4, 0.05]} radius={0.1} smoothness={4}>
-          <meshStandardMaterial
-            color={hovered ? '#1a1a2e' : '#0f0f18'}
-            metalness={0.1}
-            roughness={0.9}
-          />
-        </RoundedBox>
-
-        {/* Glow effect */}
-        <mesh ref={glowRef} position={[0, 0, -0.02]}>
-          <circleGeometry args={[0.9, 32]} />
-          <meshBasicMaterial color={color} transparent opacity={0.2} />
-        </mesh>
-
-        {/* Decorative ring */}
-        <mesh ref={ringRef} position={[0, 0, 0.03]}>
-          <ringGeometry args={[0.55, 0.58, 32]} />
-          <meshBasicMaterial color={color} transparent opacity={0.2} />
-        </mesh>
-
-        {/* Icon (using HTML for emoji support) */}
-        <Html position={[0, 0.15, 0.05]} center transform sprite>
-          <div style={{
-            fontSize: '2rem',
-            filter: hovered ? 'brightness(1.3)' : 'brightness(1)',
-            transition: 'filter 0.2s ease'
-          }}>
-            {icon}
-          </div>
-        </Html>
-
-        {/* Label */}
-        <Text
-          position={[0, -0.4, 0.03]}
-          fontSize={0.12}
-          color={hovered ? color : '#a0a0b0'}
-          anchorX="center"
-          anchorY="middle"
+        {/* Card background with liquid glass */}
+        <LiquidGlassPanel
+          width={1.4}
+          height={1.4}
+          depth={0.05}
+          radius={0.1}
+          tintColor={color}
+          opacity={hovered ? 0.7 : 0.55}
         >
-          {label}
-        </Text>
+          {/* Decorative ring */}
+          <mesh ref={ringRef} position={[0, 0, 0.01]}>
+            <ringGeometry args={[0.45, 0.48, 32]} />
+            <meshBasicMaterial color={color} transparent opacity={0.3} />
+          </mesh>
+
+          {/* Icon (using HTML for emoji support) */}
+          <Html position={[0, 0.15, 0.02]} center transform sprite>
+            <div style={{
+              fontSize: '2rem',
+              filter: hovered ? 'brightness(1.2)' : 'brightness(1)',
+              transition: 'filter 0.2s ease'
+            }}>
+              {icon}
+            </div>
+          </Html>
+
+          {/* Label */}
+          <Text
+            position={[0, -0.4, 0]}
+            fontSize={0.12}
+            color={hovered ? '#1a1a2e' : '#3a3a4a'}
+            anchorX="center"
+            anchorY="middle"
+          >
+            {label}
+          </Text>
+        </LiquidGlassPanel>
       </group>
     </Float>
   )

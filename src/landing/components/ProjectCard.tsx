@@ -3,6 +3,7 @@ import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { Text, RoundedBox } from '@react-three/drei'
 import { useSpring, animated, config } from '@react-spring/three'
 import { useExperienceStore } from '@/core/state/useExperienceStore'
+import { LiquidGlassMaterial } from '@/landing/materials/LiquidGlassMaterial'
 import type { Project } from '@/core/types'
 import type { Group, Mesh } from 'three'
 import * as THREE from 'three'
@@ -45,6 +46,7 @@ export function ProjectCard({
   const glowRef = useRef<Mesh>(null)
   const sparkleRefs = useRef<Mesh[]>([])
   const setSelectedProject = useExperienceStore((s) => s.setSelectedProject)
+  const setSelectedCardPosition = useExperienceStore((s) => s.setSelectedCardPosition)
 
   // ID13: Track tilt for magnetic effect
   const targetTilt = useRef({ x: 0, y: 0 })
@@ -120,7 +122,13 @@ export function ProjectCard({
     }
   })
 
+  // ID-3: Store world position on click for animation origin
   const handleClick = () => {
+    if (groupRef.current) {
+      const worldPos = new THREE.Vector3()
+      groupRef.current.getWorldPosition(worldPos)
+      setSelectedCardPosition([worldPos.x, worldPos.y, worldPos.z])
+    }
     setSelectedProject(project.id)
   }
 
@@ -168,17 +176,15 @@ export function ProjectCard({
       onPointerOut={handlePointerOut}
       onPointerMove={handlePointerMove}
     >
-      {/* Card background with glass-like material */}
+      {/* Card background with liquid glass material */}
       <RoundedBox
         args={[CARD_WIDTH, CARD_HEIGHT, CARD_DEPTH]}
         radius={0.08}
         smoothness={4}
       >
-        <meshStandardMaterial
-          color={hovered ? '#1a1a2e' : '#0f0f18'}
-          metalness={0.15}
-          roughness={0.85}
-          envMapIntensity={0.5}
+        <LiquidGlassMaterial
+          tintColor={accentColor}
+          opacity={hovered ? 0.92 : 0.88}
         />
       </RoundedBox>
 
@@ -210,13 +216,15 @@ export function ProjectCard({
         </mesh>
       ))}
 
-      {/* Thumbnail placeholder with gradient feel */}
+      {/* Thumbnail placeholder with subtle tint */}
       <mesh position={[0, 0.25, CARD_DEPTH / 2 + 0.01]}>
         <planeGeometry args={[CARD_WIDTH - 0.3, 0.8]} />
         <meshStandardMaterial
-          color="#1a1a2a"
-          metalness={0.1}
-          roughness={0.9}
+          color="#e8e8f0"
+          metalness={0.05}
+          roughness={0.95}
+          transparent
+          opacity={0.4}
         />
       </mesh>
 
@@ -230,7 +238,7 @@ export function ProjectCard({
       <Text
         position={[0, -0.35, CARD_DEPTH / 2 + 0.01]}
         fontSize={0.14}
-        color="#f0f0f5"
+        color="#1a1a2e"
         anchorX="center"
         anchorY="middle"
         maxWidth={CARD_WIDTH - 0.4}
@@ -242,7 +250,7 @@ export function ProjectCard({
       <Text
         position={[0, -0.55, CARD_DEPTH / 2 + 0.01]}
         fontSize={0.09}
-        color="#a0a0b0"
+        color="#4a4a5a"
         anchorX="center"
         anchorY="middle"
         maxWidth={CARD_WIDTH - 0.4}
@@ -286,12 +294,12 @@ export function ProjectCard({
               <meshBasicMaterial
                 color={FOCUS_COLORS[tag] || '#4a9eff'}
                 transparent
-                opacity={0.15}
+                opacity={0.25}
               />
             </mesh>
             <Text
               fontSize={0.055}
-              color={FOCUS_COLORS[tag] || '#4a9eff'}
+              color="#2a2a3a"
               anchorX="left"
               anchorY="middle"
             >

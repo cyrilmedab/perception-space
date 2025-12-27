@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text, Float, RoundedBox } from '@react-three/drei'
+import { Text, Float } from '@react-three/drei'
 import { career } from '@/core/content'
+import { LiquidGlassPanel } from '@/landing/components/LiquidGlassPanel'
 import type { Group } from 'three'
 import * as THREE from 'three'
 
@@ -35,7 +36,7 @@ export function CareerSection() {
         <Text
           position={[0, 3, 0]}
           fontSize={0.4}
-          color="#f0f0f5"
+          color="#1a1a2e"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.05}
@@ -45,7 +46,7 @@ export function CareerSection() {
         <Text
           position={[0, 2.5, 0]}
           fontSize={0.12}
-          color="#a0a0b0"
+          color="#4a4a5a"
           anchorX="center"
           anchorY="middle"
         >
@@ -157,24 +158,20 @@ interface CareerCardProps {
   isLeft: boolean
 }
 
+// Get accent color based on index
+const CAREER_COLORS = ['#a855f7', '#22d3ee', '#fb7185']
+
 function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
   const [hovered, setHovered] = useState(false)
   const groupRef = useRef<Group>(null)
-  const glowRef = useRef<THREE.Mesh>(null)
+
+  const accentColor = CAREER_COLORS[index % CAREER_COLORS.length]
 
   // Smooth hover animation
-  useFrame((state) => {
+  useFrame(() => {
     if (groupRef.current) {
       const targetScale = hovered ? 1.03 : 1
       groupRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1)
-    }
-    if (glowRef.current) {
-      const material = glowRef.current.material as THREE.MeshBasicMaterial
-      const targetOpacity = hovered ? 0.4 : 0.15
-      material.opacity = THREE.MathUtils.lerp(material.opacity, targetOpacity, 0.1)
-
-      // Gentle pulsing
-      glowRef.current.scale.x = 1 + Math.sin(state.clock.elapsedTime * 2 + index) * 0.02
     }
   })
 
@@ -196,87 +193,74 @@ function CareerCard({ role, index, position, isLeft }: CareerCardProps) {
         onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
         onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto' }}
       >
-        {/* Card background */}
-        <RoundedBox
-          args={[CARD_WIDTH, CARD_HEIGHT, CARD_DEPTH]}
+        {/* Card background with liquid glass */}
+        <LiquidGlassPanel
+          width={CARD_WIDTH}
+          height={CARD_HEIGHT}
+          depth={CARD_DEPTH}
           radius={0.06}
-          smoothness={4}
+          tintColor={accentColor}
+          opacity={hovered ? 0.65 : 0.55}
         >
-          <meshStandardMaterial
-            color={hovered ? '#1a1a2e' : '#0f0f18'}
-            metalness={0.1}
-            roughness={0.9}
-          />
-        </RoundedBox>
-
-        {/* Glow border */}
-        <mesh ref={glowRef} position={[0, 0, -0.01]}>
-          <planeGeometry args={[CARD_WIDTH + 0.1, CARD_HEIGHT + 0.1]} />
-          <meshBasicMaterial
-            color={index === 0 ? '#a855f7' : index === 1 ? '#22d3ee' : '#fb7185'}
-            transparent
-            opacity={0.15}
-          />
-        </mesh>
-
-        {/* Role title */}
-        <Text
-          position={[0, 0.5, CARD_DEPTH / 2 + 0.01]}
-          fontSize={0.14}
-          color="#f0f0f5"
-          anchorX="center"
-          anchorY="middle"
-          maxWidth={CARD_WIDTH - 0.4}
-        >
-          {role.title}
-        </Text>
-
-        {/* Company */}
-        <Text
-          position={[0, 0.2, CARD_DEPTH / 2 + 0.01]}
-          fontSize={0.12}
-          color={index === 0 ? '#a855f7' : index === 1 ? '#22d3ee' : '#fb7185'}
-          anchorX="center"
-          anchorY="middle"
-        >
-          {role.company}
-        </Text>
-
-        {/* Period and location */}
-        <Text
-          position={[0, -0.05, CARD_DEPTH / 2 + 0.01]}
-          fontSize={0.08}
-          color="#a0a0b0"
-          anchorX="center"
-          anchorY="middle"
-        >
-          {formatPeriod()} • {role.location}
-        </Text>
-
-        {/* Highlights */}
-        {role.highlights.slice(0, 2).map((highlight, i) => (
+          {/* Role title */}
           <Text
-            key={i}
-            position={[-CARD_WIDTH / 2 + 0.25, -0.35 - i * 0.2, CARD_DEPTH / 2 + 0.01]}
-            fontSize={0.07}
-            color="#a0a0b0"
-            anchorX="left"
+            position={[0, 0.5, 0]}
+            fontSize={0.14}
+            color="#1a1a2e"
+            anchorX="center"
             anchorY="middle"
-            maxWidth={CARD_WIDTH - 0.5}
+            maxWidth={CARD_WIDTH - 0.4}
           >
-            • {highlight}
+            {role.title}
           </Text>
-        ))}
 
-        {/* Decorative corner accent */}
-        <mesh position={[CARD_WIDTH / 2 - 0.1, CARD_HEIGHT / 2 - 0.1, CARD_DEPTH / 2 + 0.01]}>
-          <circleGeometry args={[0.04, 8]} />
-          <meshBasicMaterial
-            color={index === 0 ? '#a855f7' : index === 1 ? '#22d3ee' : '#fb7185'}
-            transparent
-            opacity={0.6}
-          />
-        </mesh>
+          {/* Company */}
+          <Text
+            position={[0, 0.2, 0]}
+            fontSize={0.12}
+            color="#2a2a4a"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {role.company}
+          </Text>
+
+          {/* Period and location */}
+          <Text
+            position={[0, -0.05, 0]}
+            fontSize={0.08}
+            color="#4a4a5a"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {formatPeriod()} | {role.location}
+          </Text>
+
+          {/* Highlights */}
+          {role.highlights.slice(0, 2).map((highlight, i) => (
+            <Text
+              key={i}
+              position={[-CARD_WIDTH / 2 + 0.25, -0.35 - i * 0.2, 0]}
+              fontSize={0.07}
+              color="#3a3a4a"
+              anchorX="left"
+              anchorY="middle"
+              maxWidth={CARD_WIDTH - 0.5}
+            >
+              - {highlight}
+            </Text>
+          ))}
+
+          {/* Decorative corner accent */}
+          <mesh position={[CARD_WIDTH / 2 - 0.1, CARD_HEIGHT / 2 - 0.1, 0]}>
+            <circleGeometry args={[0.04, 8]} />
+            <meshBasicMaterial
+              color={accentColor}
+              transparent
+              opacity={0.7}
+            />
+          </mesh>
+        </LiquidGlassPanel>
       </group>
     </Float>
   )

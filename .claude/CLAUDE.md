@@ -25,10 +25,7 @@ The landing experience is the priority. XR is an enhancement.
 
 **Do NOT use:**
 
-- Theatre.js (use GSAP or R3F springs instead)
 - Cannon.js (use Rapier)
-- Troika-three-text initially (use drei Text3D first)
-- Any CSS framework (minimal custom CSS only)
 
 ---
 

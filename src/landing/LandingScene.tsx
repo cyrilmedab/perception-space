@@ -7,8 +7,8 @@ import { ProjectsSection } from './sections/ProjectsSection'
 import { CareerSection } from './sections/CareerSection'
 import { ContactSection } from './sections/ContactSection'
 import { AtmosphericLighting, MagicalFog } from './components/AtmosphericLighting'
-import { MagicalParticles } from './components/MagicalParticles'
-import { PlayfulOrbs } from './components/PlayfulOrb'
+import { SceneBlurOverlay } from './components/SceneBlurOverlay'
+import { ProjectDetailPanel3D } from './components/ProjectDetailPanel3D'
 import { useDeviceCapabilities } from '@/core/hooks/useDeviceCapabilities'
 
 // Lazy load physics to reduce initial bundle size (~850KB saved)
@@ -43,11 +43,11 @@ function SceneContent() {
       {/* Camera follows scroll */}
       <CameraRig />
 
-      {/* Ambient magical particles floating throughout scene */}
-      <MagicalParticles />
+      {/* Scene blur overlay - darkens when detail panel is open */}
+      <SceneBlurOverlay />
 
-      {/* Interactive playful orbs */}
-      <PlayfulOrbs />
+      {/* 3D Detail panel for selected projects */}
+      <ProjectDetailPanel3D />
 
       {/* Physics playground - lazy loaded after initial render */}
       <DeferredPhysics />
@@ -80,10 +80,10 @@ export function LandingScene() {
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       style={{ position: 'fixed', top: 0, left: 0 }}
     >
-      {/* Magical fog and background */}
+      {/* Clean fog and background */}
       <MagicalFog />
 
-      {/* Enhanced atmospheric lighting system */}
+      {/* Studio-style atmospheric lighting */}
       <AtmosphericLighting />
 
       {/* Scroll-controlled scene */}
